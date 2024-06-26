@@ -48,5 +48,5 @@ public interface CourseRepository extends JpaRepository<Course, Integer>,
 			return Optional.of(path.between(from, to));
 		});
 	}
-	
+	List<Course> findByName(String name);
 }
