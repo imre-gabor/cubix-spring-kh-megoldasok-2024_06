@@ -16,6 +16,7 @@ import org.springframework.data.querydsl.binding.QuerydslBindings;
 import com.querydsl.core.types.dsl.StringExpression;
 
 import hu.webuni.university.model.Course;
+import hu.webuni.university.model.CourseStat;
 import hu.webuni.university.model.QCourse;
 import jakarta.persistence.NamedEntityGraph;
 
@@ -32,6 +33,11 @@ public interface CourseRepository extends JpaRepository<Course, Integer>,
 	@EntityGraph("Course.teachers")
 	List<Course> findByIdInWithTeachers(List<Integer> ids, Sort sort);
 	
+	@Query("SELECT c.id as courseId, c.name as courseName, "
+			+ "AVG(s.semester) AS averageSemesterOfStudents "
+			+ "FROM Course c LEFT JOIN c.students s "
+			+ "GROUP BY c")
+	List<CourseStat> getCourseStats();
 	
 	@Override
 	default void customize(QuerydslBindings bindings, QCourse course) {

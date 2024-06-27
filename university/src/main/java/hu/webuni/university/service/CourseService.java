@@ -1,11 +1,14 @@
 package hu.webuni.university.service;
 
+import java.time.OffsetDateTime;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.DefaultRevisionEntity;
 import org.hibernate.envers.RevisionType;
 import org.hibernate.envers.query.AuditEntity;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,8 @@ import hu.webuni.university.model.QCourse;
 import hu.webuni.university.repository.CourseRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -39,6 +44,7 @@ public class CourseService {
 	}
 	
 	@Transactional
+	@Cacheable("courseSearchResults")
 	public List<Course> searchCourses(Predicate predicate, Pageable pageable){
 		List<Course> courses = courseRepository.findAll(predicate, pageable).getContent();
 		List<Integer> idsOnPage = courses.stream().map(Course::getId).toList();
@@ -68,8 +74,7 @@ public class CourseService {
 					RevisionType revType = (RevisionType) objArray[2];
 					
 					Course course = (Course) objArray[0];
-					course.getStudents().size();
-					course.getTeachers().size();
+					fetchRelationships(course);
 					
 					HistoryData<Course> historyData = 
 						new HistoryData<>(
@@ -78,6 +83,20 @@ public class CourseService {
 					return historyData;
 				}).toList();
 		return resultList;
+	}
+
+	private void fetchRelationships(Course course) {
+		course.getStudents().size();
+		course.getTeachers().size();
+	}
+
+	@Transactional
+	public Course getVersionAt(Integer id, @NotNull @Valid OffsetDateTime at) {
+		Course course = AuditReaderFactory.get(em).find(Course.class, id, Date.from(at.toInstant()));
+		if(course == null)
+			return null;
+		fetchRelationships(course);
+		return course;
 	}
 
 

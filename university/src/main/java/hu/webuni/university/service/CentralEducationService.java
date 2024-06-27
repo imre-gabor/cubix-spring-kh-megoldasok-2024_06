@@ -4,7 +4,10 @@ import java.util.Random;
 
 import org.springframework.stereotype.Service;
 
+import hu.webuni.university.aspect.Retry;
+
 @Service
+@Retry(waitTime = 500, times = 5)
 public class CentralEducationService {
 
 	private Random random = new Random();
