@@ -14,6 +14,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import hu.webuni.university.model.Student;
@@ -83,5 +84,10 @@ public class StudentService {
 		if(!fileSystemResource.exists())
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		return fileSystemResource;
+	}
+	
+	@Transactional
+	public void updateBalance(int studentId, int amount) {
+		studentRepository.findById(studentId).ifPresent(s -> s.setBalance(s.getBalance() + amount));
 	}
 }
