@@ -35,7 +35,7 @@ public class UniversityUserDetailsService implements UserDetailsService {
 	}
 
 	public static UserDetails createUserDetails(UniversityUser universityUser) {
-		Set<Course> courses = Collections.emptySet();
+		Set<Course> courses = null;
 		
 		if(universityUser instanceof Teacher t) {
 			courses = t.getCourses();
@@ -45,7 +45,7 @@ public class UniversityUserDetailsService implements UserDetailsService {
 		
 		return new UserInfo(universityUser.getUsername(), universityUser.getPassword(), 
 				Arrays.asList(new SimpleGrantedAuthority(universityUser.getUserType().toString())),
-				courses.stream().map(Course::getId).toList());
+				courses != null ? courses.stream().map(Course::getId).toList() : Collections.emptyList());
 	}
 
 }
