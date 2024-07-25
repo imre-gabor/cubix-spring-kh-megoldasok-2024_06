@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import hu.webuni.university.model.Course;
 import hu.webuni.university.model.Student;
@@ -25,6 +26,7 @@ public class UniversityUserDetailsService implements UserDetailsService {
 	UserRepository userRepository;
 
 	@Override
+	@Transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		UniversityUser universityUser = userRepository.findByUsername(username)
 				.orElseThrow(()-> new UsernameNotFoundException(username));
@@ -33,7 +35,7 @@ public class UniversityUserDetailsService implements UserDetailsService {
 	}
 
 	public static UserDetails createUserDetails(UniversityUser universityUser) {
-		Set<Course> courses = Collections.emptySet();
+		Set<Course> courses = null;
 		
 		if(universityUser instanceof Teacher t) {
 			courses = t.getCourses();
@@ -43,7 +45,7 @@ public class UniversityUserDetailsService implements UserDetailsService {
 		
 		return new UserInfo(universityUser.getUsername(), universityUser.getPassword(), 
 				Arrays.asList(new SimpleGrantedAuthority(universityUser.getUserType().toString())),
-				courses.stream().map(Course::getId).toList());
+				courses != null ? courses.stream().map(Course::getId).toList() : Collections.emptyList());
 	}
 
 }

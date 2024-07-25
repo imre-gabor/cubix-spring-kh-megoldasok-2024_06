@@ -28,16 +28,17 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 
-	public SecurityFilterChain configure(HttpSecurity http) throws Exception {
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		return http
 			.csrf(csrf -> csrf.disable())
 			.sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.STATELESS))			
 			.authorizeHttpRequests(auth ->
-				auth.requestMatchers("/api/login").permitAll()
+				auth.requestMatchers("/api/login/**").permitAll()
 				.requestMatchers("/api/stomp/**").permitAll()
 				.requestMatchers(HttpMethod.POST, "/api/courses/**").hasAuthority("TEACHER")
 				.requestMatchers(HttpMethod.PUT, "/api/courses/**").hasAuthority("TEACHER")
-				.anyRequest().permitAll()
+				.anyRequest().authenticated()
 			)
 			.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
 			.build()			

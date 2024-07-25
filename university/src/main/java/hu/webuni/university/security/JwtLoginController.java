@@ -33,7 +33,7 @@ public class JwtLoginController {
 			userDetails = (UserDetails) authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword())).getPrincipal();
 		} else {
-			facebookLoginService.getUserDetailsForToken(fbToken);
+			userDetails = facebookLoginService.getUserDetailsForToken(fbToken);
 		}
 		
 		return "\""+ jwtService.creatJwtToken(userDetails) + "\"";
