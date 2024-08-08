@@ -60,11 +60,11 @@
 			<version>4.0.2</version>
 		</dependency>
 
-<!--		<dependency>-->
-<!--			<groupId>io.github.threeten-jaxb</groupId>-->
-<!--			<artifactId>threeten-jaxb-core</artifactId>-->
-<!--			<version>2.1.0</version>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>io.github.threeten-jaxb</groupId>
+			<artifactId>threeten-jaxb-core</artifactId>
+			<version>2.1.0</version>
+		</dependency>
 		
 		<dependency>
 			<groupId>com.auth0</groupId>
@@ -99,7 +99,7 @@
 
 		<dependency>
 			<groupId>org.infinispan</groupId>
-			<artifactId>infinispan-hibernate-cache-v60</artifactId>
+			<artifactId>infinispan-hibernate-cache-v62</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.infinispan</groupId>

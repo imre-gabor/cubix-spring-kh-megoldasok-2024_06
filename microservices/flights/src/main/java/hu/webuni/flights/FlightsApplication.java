@@ -3,7 +3,9 @@ package hu.webuni.flights;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+import hu.webuni.tokenlib.JwtAuthFilter;
+
+@SpringBootApplication(scanBasePackageClasses = {JwtAuthFilter.class, FlightsApplication.class})
 public class FlightsApplication {
 
 	public static void main(String[] args) {
